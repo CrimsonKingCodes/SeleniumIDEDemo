@@ -21,7 +21,25 @@ public class TC01IfUserIsInvalidTryAgainTest
     [SetUp]
     public void SetUp()
     {
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+
+        // Use modern headless mode
+        options.AddArgument("--headless=new");
+
+        // Standard CI flags
+        options.AddArgument("--no-sandbox");
+        options.AddArgument("--disable-dev-shm-usage");
+        options.AddArgument("--disable-gpu");
+        options.AddArgument("--window-size=1920x1080");
+
+        // Optional: create a temp user-data-dir to avoid reuse issues
+        string tempProfile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        options.AddArgument($"--user-data-dir={tempProfile}");
+
+        // Start ChromeDriver with options
+        driver = new ChromeDriver(options);
+
+        // Other test setup
         js = (IJavaScriptExecutor)driver;
         vars = new Dictionary<string, object>();
     }
